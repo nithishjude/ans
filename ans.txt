@@ -60,3 +60,41 @@ playbook.yml
 
 10. Executing playbook
 ansible-playbook -i inventory playbook.yml
+
+
+
+
+---
+- name: Setup Simple Web Application Infrastructure
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Install Apache web server
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+
+    - name: Start and enable Apache service
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Deploy sample web page
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <head><title>My Web App</title></head>
+          <body>
+          <h1>Welcome to My Web Application</h1>
+          <p>Deployed using Ansible</p>
+          </body>
+          </html>
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
